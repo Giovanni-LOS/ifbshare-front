@@ -1,10 +1,11 @@
 import React from 'react';
+import {Container} from "@chakra-ui/react";
 
 const HomePage = () => {
     return (
-        <div>
-            Home Page
-        </div>
+        <Container>
+
+        </Container>
     );
 };
 

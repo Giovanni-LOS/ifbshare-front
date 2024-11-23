@@ -21,7 +21,6 @@ const SignInPage = () => {
         const {success, message} = await createUser(newUser);
         if(!success) {
             toaster.create({description: message, title: 'Error', type: "error"});
-
         } else {
             toaster.create({description: message, title: 'Success', type: "success"});
             navigate("/");
