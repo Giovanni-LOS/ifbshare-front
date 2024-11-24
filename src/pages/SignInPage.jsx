@@ -1,8 +1,9 @@
 import React from 'react';
-import {Box, Button, Container, Heading, Input, VStack} from "@chakra-ui/react";
-import {useUserStore} from "../store/user.js";
+import { Button, Container, Image, Input, VStack } from "@chakra-ui/react";
+import { useUserStore } from "../store/user.js";
 import { useNavigate } from 'react-router-dom';
 import { toaster } from "../components/ui/toaster.jsx"
+import logo from "../assets/ifb.png"
 
 const SignInPage = () => {
     const [newUser, setNewUser] = React.useState({
@@ -28,13 +29,22 @@ const SignInPage = () => {
     }
 
     return (
-        <Container maxW={"container.sm"}>
-            <VStack spacing={8}>
-                <Heading as={"h1"}>
-                    Sign In
-                </Heading>
-                <Box>
-                    <VStack spacing={4}>
+        <Container 
+            maxW={"container.sm"}
+            centerContent
+            w={"30%"}
+            bg={"gray.300"}
+            p={6} rounded={"lg"} shadow={"md"}
+            mt={"2.5rem"}
+        >
+            <VStack>
+                <Image 
+                    src={logo} 
+                    alt={"logo"} 
+                    h={48} 
+                />
+
+                <VStack spacing={4} p={6}>
                         <Input
                             placeholder={"Name"}
                             name={"name"}
@@ -68,11 +78,10 @@ const SignInPage = () => {
                             value={newUser.confirmPassword}
                             onChange={(e) => setNewUser({...newUser, confirmPassword: e.target.value})}
                         />
-                        <Button onClick={handleSubmit}>
-                            Submit
-                        </Button>
-                    </VStack>
-                </Box>
+                    <Button onClick={handleSubmit} mt={"0.5rem"}>
+                        Submit
+                    </Button>
+                </VStack>
             </VStack>
         </Container>
     );

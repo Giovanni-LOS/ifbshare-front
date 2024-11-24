@@ -1,6 +1,6 @@
-import {Container, Flex, HStack, Text} from "@chakra-ui/react";
+import { Container, Flex, HStack, Text } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import {ColorModeButton} from "./ui/color-mode.jsx";
+import { ColorModeButton } from "./ui/color-mode.jsx";
 
 
 const Navbar = () => {

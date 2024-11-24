@@ -1,5 +1,3 @@
-'use client'
-
 import { ClientOnly, IconButton, Skeleton } from '@chakra-ui/react'
 import { ThemeProvider, useTheme } from 'next-themes'
 
@@ -31,7 +29,7 @@ export function useColorModeValue(light, dark) {
 
 export function ColorModeIcon() {
   const { colorMode } = useColorMode()
-  return colorMode === 'light' ? <LuSun /> : <LuMoon />
+  return colorMode !== 'light' ? <LuSun /> : <LuMoon />
 }
 
 export const ColorModeButton = React.forwardRef(
