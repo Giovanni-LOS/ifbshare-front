@@ -1,8 +1,9 @@
 import { Box } from "@chakra-ui/react";
 import { Route, Routes}  from "react-router-dom";
 import HomePage from "./pages/HomePage.jsx";
-import SignInPage from "./pages/SignInPage.jsx";
+import SignUpPage from "./pages/SignUpPage.jsx";
 import Navbar from "./components/Navbar.jsx";
+import LogInPage from "./pages/LogInPage.jsx";
 
 function App() {
 
@@ -12,7 +13,8 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/sign-in" element={<SignInPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+            <Route path={"/login"} element={<LogInPage />} />
         </Routes>
       </Box>
     </>

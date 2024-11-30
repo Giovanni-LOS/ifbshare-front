@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { toaster } from "../components/ui/toaster.jsx"
 import logo from "../assets/ifb.png"
 
-const SignInPage = () => {
+const SignUpPage = () => {
     const [newUser, setNewUser] = React.useState({
         name: "",
         nickname: "",
@@ -87,4 +87,4 @@ const SignInPage = () => {
     );
 };
 
-export default SignInPage;
+export default SignUpPage;
