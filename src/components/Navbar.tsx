@@ -1,7 +1,6 @@
 import { Container, Flex, HStack, Text } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { ColorModeButton } from "./ui/color-mode.jsx";
-import '../global.css';
 
 
 const Navbar = () => {
@@ -17,7 +16,7 @@ const Navbar = () => {
                     sm: "row",
                 }}
             >
-                <HStack spacing={2}>
+                <HStack spaceX={2}>
                     <Text
                         fontSize={"2xl"}
                         fontWeight={"bold"}

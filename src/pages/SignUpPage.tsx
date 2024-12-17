@@ -1,12 +1,11 @@
-import React from 'react';
 import { Button, Container, Image, Input, VStack } from "@chakra-ui/react";
 import { useUserStore } from "../store/user.js";
 import { useNavigate } from 'react-router-dom';
 import { toaster } from "../components/ui/toaster.jsx"
-import logo from "../assets/ifb.png"
+import { useState } from "react";
 
 const SignUpPage = () => {
-    const [newUser, setNewUser] = React.useState({
+    const [newUser, setNewUser] = useState({
         name: "",
         nickname: "",
         email: "",
@@ -39,12 +38,11 @@ const SignUpPage = () => {
         >
             <VStack>
                 <Image 
-                    src={logo} 
                     alt={"logo"} 
                     h={48} 
                 />
 
-                <VStack spacing={4} p={6}>
+                <VStack spaceY={4} p={6}>
                         <Input
                             placeholder={"Name"}
                             name={"name"}
