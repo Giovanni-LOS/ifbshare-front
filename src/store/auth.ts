@@ -5,6 +5,7 @@ interface User {
     email: string;
     nickname?: string;
     password?: string;
+    confirmPassword?: string;
 }
 
 interface AuthStore {
@@ -42,9 +43,8 @@ export const useAuthStore = create<AuthStore>(() => ({
             } 
         },
         logout: async () => {
-            
             try {
-                const res = await axios.post("/api/auth/logout")
+                const res = await axios.get("/api/auth/logout")
 
                 return res.data
             } catch (err: unknown) {
