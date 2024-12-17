@@ -1,0 +1,10 @@
+:root {
+    --black: #000000;               /* Black */
+    --soft-black: #050505;          /* Soft Black */
+    --teal-blue: #104E56;           /* Teal Blue */
+    --mint-green: #1B9AAA;          /* Mint Green */
+    --light-blue: #8DCDD5;          /* Light Blue */
+    --dark-beige: #DDDBCB;          /* Dark Beige */
+    --light-cream: #F5F1E3;         /* Light Cream */
+    --white: #FFFFFF;               /* White */
+}
