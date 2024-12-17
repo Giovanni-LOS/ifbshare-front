@@ -24,7 +24,7 @@ const SignInPage = () => {
             toaster.create({description: message, title: 'Error', type: "error"});
         } else {
             toaster.create({description: message, title: 'Success', type: "success"});
-            navigate("/");
+            navigate("/login");
         }
     }
 
@@ -85,7 +85,7 @@ const SignInPage = () => {
                 py={".125rem"}
                 fontSize="sm"
                 bg="white"
-                placeholder="Password"
+                placeholder="Password(at least 8 characters, with a mix of letters, numbers, and symbols)"
                 name="password"
                 type="password"
                 value={newUser.password}
@@ -104,7 +104,7 @@ const SignInPage = () => {
                 value={newUser.confirmPassword}
                 onChange={(e) => setNewUser({ ...newUser, confirmPassword: e.target.value })}
             />
-            <Button onClick={handleSubmit} mt={"0.5rem"} bg="cyan.600" color="white">
+            <Button onClick={handleSubmit} mt={"0.5rem"} bg="cyan.600" _hover={{ bg: "cyan.700" }} color="white">
                 Register
             </Button>
             <LinkBox>

@@ -1,6 +1,7 @@
-import { Button, Container, Image, Input, LinkBox, Text, VStack } from "@chakra-ui/react";
+import { Button, Container, Flex, Image, Input, LinkBox, Text, VStack } from "@chakra-ui/react";
+import { Checkbox } from "@/components/ui/checkbox"
 import { Link, useNavigate } from 'react-router-dom';
-import { toaster } from "../components/ui/toaster.jsx";
+import { toaster } from "../components/ui/toaster";
 import { useState } from "react";
 import { useAuthStore } from "@/store/auth";
 import logo from "@/assets/logo.svg";
@@ -33,7 +34,7 @@ const LogInPage = () => {
             centerContent
         >
             <VStack>
-                <Image src={logo} alt={"logo"} w={"25%"}/>
+                <Image src={logo} alt={"logo"} w={"25%"} objectFit="contain"/>
 
                 <VStack spaceY={3} p={6} minW={"24rem"}>
                     <Input
@@ -62,12 +63,30 @@ const LogInPage = () => {
                         value={user.password}
                         onChange={(e) => setUser({ ...user, password: e.target.value })}
                     />
+                    <Flex flexDir={"row"} justifyContent={"space-between"} alignItems="center" w="full">
+                        <Checkbox size="sm" defaultChecked>
+                            Remember Me
+                        </Checkbox>
+                        <Link to="/request-password">
+                            <Text 
+                                fontSize="sm"
+                                _hover={{ color: "cyan.700" }}
+                                mt={0}
+                                ml={4}
+                            >
+                                Forgot password?
+                            </Text>
+                        </Link>
+                    </Flex>
+
                     <Button 
                         onClick={handleLogin} 
                         mt={"0.5rem"} 
                         bg="cyan.600" 
                         color="white" 
                         size="lg"
+                        w="full"
+                        _hover={{ bg: "cyan.700" }}
                     >
                         Login
                     </Button>
