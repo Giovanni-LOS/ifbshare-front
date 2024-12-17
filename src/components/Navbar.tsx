@@ -6,7 +6,7 @@ import { ColorModeButton } from "./ui/color-mode.jsx";
 const Navbar = () => {
 
     return (
-        <Container maxW={"1140px"} px={4} bg={{base: "var(--mauve)", _dark: "var(--purple)"}}>
+        <Container maxW={"100%"} px={4} bg={{base: "var(--mauve)", _dark: "var(--purple)"}}>
             <Flex
                 h={16}
                 alignItems={"center"}
