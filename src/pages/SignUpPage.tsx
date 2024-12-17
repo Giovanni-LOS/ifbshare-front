@@ -2,6 +2,7 @@ import { Button, Container, Image, Input, VStack } from "@chakra-ui/react";
 import { useNavigate } from 'react-router-dom';
 import { toaster } from "../components/ui/toaster.jsx"
 import { useState } from "react";
+import logo from "../assets/logo.png"
 
 const SignUpPage = () => {
     const [newUser, setNewUser] = useState({
@@ -37,6 +38,7 @@ const SignUpPage = () => {
         >
             <VStack>
                 <Image
+                src={logo}
                     alt={"logo"} 
                     h={48} 
                 />
