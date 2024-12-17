@@ -10,7 +10,6 @@ function App() {
   return (
     <>
       <Box minH={"100vh"}>
-        <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignUpPage />} />
