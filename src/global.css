@@ -1,3 +1,11 @@
+/* Importando a fonte Nabla da Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Nabla:EDPT,EHLT@30..200,24&display=swap");
+
+@font-palette-values --Nabla {
+    font-family: Nabla;
+    base-palette: 4;
+}
+
 :root {
     --black: #000000;               /* Black */
     --soft-black: #050505;          /* Soft Black */
@@ -7,4 +15,17 @@
     --dark-beige: #DDDBCB;          /* Dark Beige */
     --light-cream: #F5F1E3;         /* Light Cream */
     --white: #FFFFFF;               /* White */
+}
+
+.chakra-container {
+}
+
+
+.nabla-font {
+    font-family: "Nabla", serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-palette: --Nabla;
+    font-variation-settings: "EDPT" 100, "EHLT" 120
 }
