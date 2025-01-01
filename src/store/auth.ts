@@ -1,8 +1,8 @@
-import axios from "axios";
+import axios from "@/utils/axios";
 import { create } from "zustand"
 
 interface User {
-    email: string;
+    email?: string;
     nickname?: string;
     password?: string;
     confirmPassword?: string;
@@ -13,6 +13,8 @@ interface AuthStore {
     login: (user: User) => Promise<{ success: boolean, message: string }>;
     logout: (user: User) => Promise<{ success: boolean, message: string }>;
     requestPassword: (user: User) => Promise<{ success: boolean, message: string }>;
+    resetPassword: (user: User, token: string, expire: string) => Promise<{ success: boolean, message: string }>;
+    verifyEmail: (token: string, expire: string) => Promise<{ success: boolean, message: string }>;
 }
 
 export const useAuthStore = create<AuthStore>(() => ({
@@ -77,7 +79,50 @@ export const useAuthStore = create<AuthStore>(() => ({
                 if(axios.isAxiosError(err)) {
                     return { success: false, message: err.response?.data?.message || err.request }
                 } else {
-                    return { success: false, message: 'Registration failed' }
+                    return { success: false, message: 'Request failed' }
+                }
+            }
+        },
+        resetPassword: async (user, token, expire) => {
+            if(!user.password || !user.confirmPassword) {
+                return { success: false, message: "Please add all fields" }
+            }
+            else if(!token) {
+                return { success: false, message: "Invalid token" }
+            }
+            else if(new Date(expire) < new Date()) {
+                return { success: false, message: "Token expired" };
+            }
+
+            try {
+                const res = await axios.post("/api/auth/password/reset", { ...user, token })
+
+                return res.data
+            } catch (err: unknown) {
+                if(axios.isAxiosError(err)) {
+                    return { success: false, message: err.response?.data?.message || err.request }
+                } else {
+                    return { success: false, message: 'Reset failed' }
+                }
+            }
+        },
+        verifyEmail: async (token, expire) => {
+            if(!token) {
+                return { success: false, message: "Invalid token" };
+            }
+            else if (new Date(expire) < new Date()) {
+                return { success: false, message: "Token expired" };
+            }
+
+            try {
+                const res = await axios.post("/api/auth/email/verify", { token });
+
+                return res.data;
+            } catch (err: unknown) {
+                if (axios.isAxiosError(err)) {
+                    return { success: false, message: err.response?.data?.message || err.request };
+                } else {
+                    return { success: false, message: "Email verification failed" };
                 }
             }
         }
