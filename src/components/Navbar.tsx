@@ -14,8 +14,12 @@ const Navbar = () => {
 
     useEffect(() => {
         const fetchUserProfile = async () => {
-            const data = await getUserProfile();
-            setNickname(data.data.nickname);
+            const { success, data: { nickname } } = await getUserProfile();
+            if(!success) {
+                setNickname("Account");
+            } else {
+                setNickname(nickname);
+            }
         };
         fetchUserProfile();
     }, []);

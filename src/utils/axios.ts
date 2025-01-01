@@ -1,5 +1,6 @@
-import axios from 'axios';
-import { globalRouter } from './globalRouter';
+import axios from "axios";
+import { globalRouter } from "./globalRouter";
+import { toaster } from "@/components/ui/toaster";
 
 axios.defaults.withCredentials = true;
 
@@ -10,10 +11,9 @@ axios.interceptors.response.use(
       const { status } = error.response;
 
       if (status === 401 || status === 403) {
+        toaster.create({ description: error.response?.message, title: 'Error', type: "error" });
 
-        //toast.error(error.response?.data.message)
-
-        globalRouter.navigate?.("/login")
+        globalRouter.navigate?.("/login");
       }
     }
 
@@ -21,3 +21,4 @@ axios.interceptors.response.use(
   }
 );
 
+export default axios;

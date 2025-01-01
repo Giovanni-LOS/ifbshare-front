@@ -4,6 +4,8 @@ import HomePage from "./pages/HomePage";
 import SignUpPage from "./pages/SignInPage";
 import LogInPage from "./pages/LogInPage";
 import RequestPasswordPage from "./pages/RequestPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
+import VerifyEmailPage from "./pages/VerifyEmail";
 
 function App() {
 
@@ -15,6 +17,8 @@ function App() {
           <Route path="/sign-in" element={<SignUpPage />} />
           <Route path="/login" element={<LogInPage />} />
           <Route path="/request-password" element={<RequestPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
         </Routes>
       </Box>
     </>
