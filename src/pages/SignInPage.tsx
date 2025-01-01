@@ -23,7 +23,7 @@ const SignInPage = () => {
         if(!success) {
             toaster.create({description: message, title: 'Error', type: "error"});
         } else {
-            toaster.create({description: message, title: 'Success', type: "success"});
+            toaster.create({description: message, title: 'Success', type: "success", duration: 10000, meta: { closable: true }});
             navigate("/login");
         }
     }

@@ -5,7 +5,7 @@ import { toaster } from "@/components/ui/toaster";
 axios.defaults.withCredentials = true;
 
 axios.interceptors.response.use(
-  (response) => response.data,
+  (response) => response,
   (error) => {
     if (error.response) {
       const { status } = error.response;
