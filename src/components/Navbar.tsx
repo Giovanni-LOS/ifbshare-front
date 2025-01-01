@@ -1,14 +1,29 @@
-import { Container, Flex, HStack, Text } from "@chakra-ui/react";
+import { Container, Flex, HStack, Text  } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { ColorModeButton } from "./ui/color-mode.jsx";
 import "../global.css";
-import logo from "../assets/icon.svg";  // Altere o caminho conforme necessário
+import logo from "../assets/icon.svg";
+import {useUserProfileStore} from "@/store/user.ts";
+import {useEffect, useState} from "react";
 
 
 const Navbar = () => {
 
+    const [nickname, setNickname] = useState("");
+    const { getUserProfile } = useUserProfileStore();
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            const data = await getUserProfile();
+            setNickname(data.data.nickname);
+        };
+        fetchUserProfile();
+    }, []);
+
+
+
     return (
-        <Container p="0" width="100vw" maxW="100vw" px={33} bg={{base: "var(--mint-green)", _dark: "var(--mint-green)"}}>
+        <Container p="0" maxW="100vw" px={33} bg={{base: "var(--mint-green)", _dark: "var(--mint-green)"}}>
             <Flex
                 h={16}
                 alignItems={"center"}
@@ -34,6 +49,8 @@ const Navbar = () => {
                     >
                         <Link to={"/"}>IFB Share</Link>
                     </Text>
+                    <Link to={"/"}>Home</Link>
+                    <Link to={"/account"}>{nickname}</Link>
                 </HStack>
                 <ColorModeButton/>
             </Flex>
