@@ -36,91 +36,90 @@ const SignInPage = () => {
             py={6} 
             centerContent
         >
-    <VStack pb={0}>
-        <Image src={logo} alt={"logo"} w={"25%"} objectFit="contain"/>
+            <VStack>
+                <Image src={logo} alt={"logo"} w={"25%"} objectFit="contain"/>
 
-        <VStack spaceY={3} p={6}>
-            <Input
-                color={"black"}
-                size="sm"
-                px={".5rem"}
-                py={".125rem"}
-                fontSize="sm"
-                bg="white"
-                placeholder="Name"
-                name="name"
-                value={newUser.name}
-                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                w="sm"
-            />
-            <Input
-                color={"black"}
-                size="sm"
-                px={".5rem"}
-                py={".125rem"}
-                fontSize="sm"
-                bg="white"
-                placeholder="Nickname"
-                name="nickname"
-                value={newUser.nickname}
-                onChange={(e) => setNewUser({ ...newUser, nickname: e.target.value })}
-            />
-            <Input
-                color={"black"}
-                size="sm"
-                px={".5rem"}
-                py={".125rem"}
-                fontSize="sm"
-                bg="white"
-                placeholder="Email"
-                name="email"
-                type="email"
-                value={newUser.email}
-                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-            />
-            <Input
-                color={"black"}
-                size="sm"
-                px={".5rem"}
-                py={".125rem"}
-                fontSize="sm"
-                bg="white"
-                placeholder="Password(at least 8 characters, with a mix of letters, numbers, and symbols)"
-                name="password"
-                type="password"
-                value={newUser.password}
-                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-            />
-            <Input
-                color={"black"}
-                size="sm"
-                px={".5rem"}
-                py={".125rem"}
-                fontSize="sm"
-                bg="white"
-                placeholder="Confirm Password"
-                name="confirmPassword"
-                type="password"
-                value={newUser.confirmPassword}
-                onChange={(e) => setNewUser({ ...newUser, confirmPassword: e.target.value })}
-            />
-            <Button onClick={handleSubmit} mt={"0.5rem"} bg="cyan.600" _hover={{ bg: "cyan.700" }} color="white">
-                Register
-            </Button>
-            <LinkBox>
-                <Text>
-                    Have an account?{" "}
-                    <Link to={"/login"} >
-                        <Text color="cyan.600" _hover={{ color: "cyan.700" }} display={"inline"}>
-                            Login
+                <VStack spaceY={3} p={6} minW={"24rem"}>
+                    <Input
+                        color={"black"}
+                        size="sm"
+                        px={".5rem"}
+                        py={".125rem"}
+                        fontSize="sm"
+                        bg="white"
+                        placeholder="Name"
+                        name="name"
+                        value={newUser.name}
+                        onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                        w="sm"
+                    />
+                    <Input
+                        color={"black"}
+                        size="sm"
+                        px={".5rem"}
+                        py={".125rem"}
+                        fontSize="sm"
+                        bg="white"
+                        placeholder="Nickname"
+                        name="nickname"
+                        value={newUser.nickname}
+                        onChange={(e) => setNewUser({ ...newUser, nickname: e.target.value })}
+                    />
+                    <Input
+                        color={"black"}
+                        size="sm"
+                        px={".5rem"}
+                        py={".125rem"}
+                        fontSize="sm"
+                        bg="white"
+                        placeholder="Email"
+                        name="email"
+                        type="email"
+                        value={newUser.email}
+                        onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                    />
+                    <Input
+                        color={"black"}
+                        size="sm"
+                        px={".5rem"}
+                        py={".125rem"}
+                        fontSize="sm"
+                        bg="white"
+                        placeholder="Password(at least 8 with letters, numbers, and symbols)"
+                        name="password"
+                        type="password"
+                        value={newUser.password}
+                        onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                    />
+                    <Input
+                        color={"black"}
+                        size="sm"
+                        px={".5rem"}
+                        py={".125rem"}
+                        fontSize="sm"
+                        bg="white"
+                        placeholder="Confirm Password"
+                        name="confirmPassword"
+                        type="password"
+                        value={newUser.confirmPassword}
+                        onChange={(e) => setNewUser({ ...newUser, confirmPassword: e.target.value })}
+                    />
+                    <Button onClick={handleSubmit} mt={"0.5rem"} bg="cyan.600" _hover={{ bg: "cyan.700" }} color="white">
+                        Register
+                    </Button>
+                    <LinkBox>
+                        <Text>
+                            Have an account?{" "}
+                            <Link to={"/login"} >
+                                <Text color="cyan.600" _hover={{ color: "cyan.700" }} display={"inline"}>
+                                    Login
+                                </Text>
+                            </Link>
                         </Text>
-                    </Link>
-                </Text>
-            </LinkBox>
-        </VStack>
-    </VStack>
-</Container>
-
+                    </LinkBox>
+                </VStack>
+            </VStack>
+    </Container>
     );
 };
 
