@@ -26,7 +26,7 @@ export const useUserProfileStore = create<UserProfileStore>(() => ({
           message: err.response?.data?.message || err.request,
         };
       } else {
-        return { success: false, message: "Failed to fetch user profile" };
+        return { success: false, message: "Failed to fetch user profile", data: "" };
       }
     }
   },
