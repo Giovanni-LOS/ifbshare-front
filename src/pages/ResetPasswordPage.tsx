@@ -62,7 +62,7 @@ const ResetPasswordPage = () => {
                         bg="white"
                         placeholder="Confirm Password"
                         name="Confirm Password"
-                        type="Confirm Password"
+                        type="password"
                         value={user.confirmPassword}
                         onChange={(e) => setUser({ ...user, confirmPassword: e.target.value })}
                     />

@@ -13,7 +13,7 @@ axios.interceptors.response.use(
       if (status === 401 || status === 403) {
         toaster.create({ description: error.response?.message, title: 'Error', type: "error" });
 
-        globalRouter.navigate?.("/login");
+        //globalRouter.navigate?.("/login");
       }
     }
 

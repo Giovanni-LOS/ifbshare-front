@@ -1,6 +1,12 @@
 /* Importando a fonte Nabla da Google Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Nabla:EDPT,EHLT@30..200,24&display=swap");
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
 @font-palette-values --Nabla {
     font-family: Nabla;
     base-palette: 4;
@@ -14,7 +20,8 @@
     --light-blue: #8DCDD5;          /* Light Blue */
     --dark-beige: #DDDBCB;          /* Dark Beige */
     --light-cream: #F5F1E3;         /* Light Cream */
-    --white: #FFFFFF;               /* White */
+    --white: #FFFFFF;
+    --white-500: rgba(255, 255, 255, 0.5);               /* White */
 }
 
 .chakra-container {

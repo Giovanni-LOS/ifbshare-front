@@ -11,7 +11,7 @@ interface User {
 interface AuthStore {
     register: (user: User) => Promise<{ success: boolean, message: string }>;
     login: (user: User) => Promise<{ success: boolean, message: string }>;
-    logout: (user: User) => Promise<{ success: boolean, message: string }>;
+    logout: () => Promise<{ success: boolean, message: string }>;
     requestPassword: (user: User) => Promise<{ success: boolean, message: string }>;
     resetPassword: (user: User, token: string, expire: string) => Promise<{ success: boolean, message: string }>;
     verifyEmail: (token: string, expire: string) => Promise<{ success: boolean, message: string }>;
