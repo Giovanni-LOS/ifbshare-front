@@ -8,19 +8,21 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import VerifyEmailPage from "./pages/VerifyEmail";
 import ProfilePage from "./pages/ProfilePage";
 import Navbar from "./components/Navbar";
+import CreatePostPage from "./pages/CreatePostPage";
 
 function App() {
   return (
     <>
       <Box minH={"100vh"}>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<Box><Navbar /><HomePage /></Box>} />
           <Route path="/sign-in" element={<SignUpPage />} />
           <Route path="/login" element={<LogInPage />} />
           <Route path="/request-password" element={<RequestPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
           <Route path="/profile" element={<Box><Navbar /><ProfilePage /></Box>} />
+          <Route path="/add-post" element={<Box><Navbar /><CreatePostPage /></Box>} />
         </Routes>
       </Box>
     </>
