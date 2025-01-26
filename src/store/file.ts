@@ -41,15 +41,11 @@ export const useFileStore = create<FileCustomStore>(() => ({
     },
     downloadFile: async (fileId: string) => {
         try {
-         const response = await axios.get(`/download/${fileId}`, {
+         const response = await axios.get(`/api/files/download/${fileId}`, {
            responseType: "blob", 
          });
 
-         return { success: true, message: "", 
-            data: new Blob([response.data], {
-           type: response.headers["content-type"],
-         }),
-        };
+         return { success: true, message: "File downloaded", data: response.data };
 
         } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
