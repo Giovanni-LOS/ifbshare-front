@@ -21,13 +21,13 @@ const PostRow = ({ post }: PostRowProps) => {
     const { getFilesMetaData, downloadFile } = useFileStore();
 
     async function handleDownloadFiles(file: FileCustomMetaData) {
-        const { success, message, data: blob } = await downloadFile(file._id);
-        if (!success || !blob) {
+        const { success, message, data } = await downloadFile(file._id);
+        if (!success || !data) {
             toaster.create({ description: message, title: 'Error', type: "error" });
             return;
         }
 
-        const url = window.URL.createObjectURL(blob);
+        const url = window.URL.createObjectURL(data);
 
         const link = document.createElement('a');
         link.href = url;
