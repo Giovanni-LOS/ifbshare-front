@@ -19,7 +19,6 @@ const Navbar = () => {
             const { success, message } = await getUserProfile();
             if(!success) {
                 toaster.create({ description: message, title: 'Error', type: "error" });
-                setNickname("Conta");
             } else {
                 setNickname(user.nickname);
             }

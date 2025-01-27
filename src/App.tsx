@@ -9,6 +9,7 @@ import VerifyEmailPage from "./pages/VerifyEmail";
 import ProfilePage from "./pages/ProfilePage";
 import Navbar from "./components/Navbar";
 import CreatePostPage from "./pages/CreatePostPage";
+import PostPage from "./pages/PostPage";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/verify-email" element={<VerifyEmailPage />} />
           <Route path="/profile" element={<Box><Navbar /><ProfilePage /></Box>} />
           <Route path="/add-post" element={<Box><Navbar /><CreatePostPage /></Box>} />
+          <Route path="/post/:id" element={<Box><Navbar /><PostPage/></Box>} />
         </Routes>
       </Box>
     </>

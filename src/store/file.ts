@@ -20,7 +20,7 @@ interface FileCustomStore {
         message: string;
         data: FileCustomMetaData[];
     }>;
-    downloadFile: (fileId: string) => Promise<{ success: boolean; message: string; data: Blob }>;
+    downloadFile: (fileId: string) => Promise<{ success: boolean; message: string; data: Blob|null}>;
 }
 
 export const useFileStore = create<FileCustomStore>(() => ({
@@ -38,30 +38,28 @@ export const useFileStore = create<FileCustomStore>(() => ({
             return { success: false, message: "Failed to fetch files", data: "" };
         }
         }
-    },
-    downloadFile: async (fileId: string) => {
+    }, downloadFile : async (fileId: string) => {
         try {
-         const response = await axios.get(`/download/${fileId}`, {
-           responseType: "blob", 
-         });
+            const response = await axios.get(`/download/${fileId}`, {
+                responseType: "blob", // Garante que a resposta é tratada como blob
+            });
 
-         return { success: true, message: "", 
-            data: new Blob([response.data], {
-           type: response.headers["content-type"],
-         }),
-        };
+            // Verifica se a resposta contém um blob válido
+            if (!response.data || !(response.data instanceof Blob) || response.data.size === 0) {
+                return {success: false, message: "Arquivo vazio ou inválido", data: null};
+            }
 
+            return {success: true, message: "", data: response.data}; // Retorna o blob diretamente
         } catch (err: unknown) {
-        if (axios.isAxiosError(err)) {
-            return {
-            success: false,
-            message: err.response?.data?.message || err.request,
-            data: new Blob(),
-            };
-        } else {
-            return { success: false, message: "Failed to download file", data: new Blob() };
+            if (axios.isAxiosError(err)) {
+                return {
+                    success: false,
+                    message: err.response?.data?.message || "Erro ao baixar o arquivo",
+                    data: null,
+                };
+            }
+            return {success: false, message: "Erro inesperado", data: null};
         }
-        }
-    },
+    }
    
     }));
