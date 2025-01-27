@@ -21,7 +21,6 @@ const PostRow = ({ post }: PostRowProps) => {
     const { getFilesMetaData, downloadFile } = useFileStore();
 
     async function handleDownloadFiles(file: FileCustomMetaData) {
-<<<<<<< HEAD
         const { success, message, data: blob } = await downloadFile(file._id);
         if (!success || !blob) {
             toaster.create({ description: message, title: 'Error', type: "error" });
@@ -29,15 +28,7 @@ const PostRow = ({ post }: PostRowProps) => {
         }
 
         const url = window.URL.createObjectURL(blob);
-=======
-        const { success, message, data } = await downloadFile(file._id);
-        if(!success || !data) {
-            toaster.create({ description: message, title: 'Error', type: "error" });
-            return;
-        } 
-    
-        const url = window.URL.createObjectURL(data);
->>>>>>> 79f91e2d0b217204c490c000ee417bc65a9f6b0b
+
         const link = document.createElement('a');
         link.href = url;
         link.setAttribute('download', file.name);
