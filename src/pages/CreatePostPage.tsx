@@ -1,8 +1,6 @@
-import { Button, Container, Flex, Heading, HStack, Image, Input, SimpleGrid, VStack } from "@chakra-ui/react";
+import { Button, Container, Heading, HStack, Input, VStack } from "@chakra-ui/react";
 import { Field } from "@/components/ui/field"
 import { useEffect, useState } from "react";
-import { useUserProfileStore } from "@/store/user";
-import { toaster } from "@/components/ui/toaster";
 import { Post, PostCreated } from "@/store/post";
 
 interface CreatePostPageProps {
@@ -52,20 +50,21 @@ const CreatePostPage = ({ post, onClose }: CreatePostPageProps) => {
                     <Field
                         label="Title"
                         required
-                        fontSize={"xl"}
                     >
                         <Input
                             color={"black"}
-                            size="sm"
-                            px={".5rem"}
-                            py={".125rem"}
+                            size="md"
+                            px={".75rem"}
+                            py={".25rem"}
                             fontSize="md"
-                            bg="white"
+                            bg="#f5f1e3"
+                            border="1px solid black"
                             placeholder="Title"
                             name="title"
                             type="text"
                             value={newPost.title}
                             onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
+                            width="100%"
                         />
                     </Field>
 
@@ -75,16 +74,18 @@ const CreatePostPage = ({ post, onClose }: CreatePostPageProps) => {
                     >
                         <Input
                             color={"black"}
-                            size="sm"
-                            px={".5rem"}
-                            py={".125rem"}
-                            fontSize="sm"
-                            bg="white"
+                            size="md"
+                            px={".75rem"}
+                            py={".25rem"}
+                            fontSize="md"
+                            bg="#f5f1e3"
+                            border="1px solid black"
                             placeholder="Content"
                             name="content"
                             type="text"
                             value={newPost.content}
                             onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
+                            width="100%"
                         />
                     </Field>
                 </VStack>
@@ -101,16 +102,16 @@ const CreatePostPage = ({ post, onClose }: CreatePostPageProps) => {
                     Cancel
                 </Button>
                 <Button 
-                    mt={"0.5rem"} 
-                    bg="cyan.600" 
-                    color="white" 
+b                   g="cyan.600"
+                    color="white"
                     size="lg"
                     _hover={{ bg: "cyan.700" }}
                     type="submit"
+                    p={5}
                     >
                         Save
                 </Button>
-                    </HStack>
+            </HStack>
         </Container>
     );
 }

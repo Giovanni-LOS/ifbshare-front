@@ -40,6 +40,7 @@ export const useFileStore = create<FileCustomStore>(() => ({
         }
     }, downloadFile : async (fileId: string) => {
         try {
+<<<<<<< HEAD
             const response = await axios.get(`/download/${fileId}`, {
                 responseType: "blob", // Garante que a resposta é tratada como blob
             });
@@ -48,6 +49,13 @@ export const useFileStore = create<FileCustomStore>(() => ({
             if (!response.data || !(response.data instanceof Blob) || response.data.size === 0) {
                 return {success: false, message: "Arquivo vazio ou inválido", data: null};
             }
+=======
+         const response = await axios.get(`/api/files/download/${fileId}`, {
+           responseType: "blob", 
+         });
+
+         return { success: true, message: "File downloaded", data: response.data };
+>>>>>>> 79f91e2d0b217204c490c000ee417bc65a9f6b0b
 
             return {success: true, message: "", data: response.data}; // Retorna o blob diretamente
         } catch (err: unknown) {
