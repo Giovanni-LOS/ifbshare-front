@@ -11,7 +11,7 @@ import CreatePostButton from "./CreatePostButton";
 
 const Navbar = () => {
 
-    const [nickname, setNickname] = useState("");
+    const [nickname, setNickname] = useState("Conta");
     const { getUserProfile, user } = useUserProfileStore();
 
     useEffect(() => {
@@ -19,13 +19,12 @@ const Navbar = () => {
             const { success, message } = await getUserProfile();
             if(!success) {
                 toaster.create({ description: message, title: 'Error', type: "error" });
-                setNickname("Conta");
             } else {
                 setNickname(user.nickname);
             }
         };
         fetchUserProfile();
-    }, []);
+    }, [nickname]);
 
 
 

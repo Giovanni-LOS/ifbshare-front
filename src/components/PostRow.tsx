@@ -82,10 +82,10 @@ const PostRow = ({ post }: PostRowProps) => {
                     </>
                 )}
             </Box>
-            <Box p={6} bg="#dddbcb" rounded={"md"}>
+            <Box p={6} bg="#dddbcb" rounded={"md"} width="10%">
                 <Text fontSize="md" color="black">{ author || "???" }</Text>
             </Box>
-            <Box p={6} bg="#dddbcb" rounded={"md"}>
+            <Box p={6} bg="#dddbcb" rounded={"md"} width="10%">
                 <Text fontSize="md" color="black">{dateDistanceToToday(post.createdAt) + " dias atrás"}</Text>
             </Box>
         </Flex>
