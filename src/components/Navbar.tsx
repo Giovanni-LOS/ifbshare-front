@@ -24,6 +24,7 @@ const Navbar = () => {
         fetchUserProfile();
     }, [getUserProfile]);
 
+
     useEffect(() => {
         if (loggedIn) {
             setNickname(user.nickname);
