@@ -47,8 +47,6 @@ export const useFileStore = create<FileCustomStore>(() => ({
 
          return { success: true, message: "File downloaded", data: response.data };
 
-
-            return {success: true, message: "", data: response.data}; // Retorna o blob diretamente
         } catch (err: unknown) {
             if (axios.isAxiosError(err)) {
                 return {

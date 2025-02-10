@@ -11,7 +11,10 @@ export interface Post {
     author: string;
 }
 
-export interface PostCreated extends Omit<Post, "_id" | "createdAt" | "updatedAt" | "author"> {
+export interface PostCreated extends Omit<Post, "_id" | "createdAt" | "updatedAt"> {
+    files?: File[];
+}
+export interface PostUpdated extends Omit<Post, "createdAt" | "updatedAt"> {
     files?: File[];
 }
 
@@ -31,8 +34,18 @@ export interface PostStore {
 
 export const usePostStore = create<PostStore>(() => ({
         createPost: async (post) => {
+          const formData = new FormData();
+          formData.append("title", post.title);
+          formData.append("content", post.content || "");
+          formData.append("author", post.author);
+          post.tags?.forEach((tag) => {
+            formData.append("tags", tag);
+          });
+          post.files?.forEach((file) => {
+            formData.append("file", file);
+          });
             try {
-                const res = await axios.post("/api/posts/", post);
+                const res = await axios.post("/api/posts/", formData);
 
                 return res.data;
               } catch (err: unknown) {
