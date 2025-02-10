@@ -1,45 +1,61 @@
-import { Button, Container, Flex, Heading, HStack, Image, Input, SimpleGrid, Text, useDisclosure, VStack } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Heading, HStack, Image, Input, SimpleGrid, Text, VStack } from "@chakra-ui/react";
 import { Field } from "@/components/ui/field"
 import { useEffect, useState } from "react";
-import { UserProfile, useUserProfileStore } from "@/store/user";
+import { UpdateUserProfile, useUserProfileStore } from "@/store/user";
 import { toaster } from "@/components/ui/toaster";
-import { LuPlus } from "react-icons/lu";
 import { globalRouter } from "@/utils/globalRouter";
 import { useAuthStore } from "@/store/auth";
+import CreatePostButton from "@/components/CreatePostButton";
+import PostRow from "@/components/PostRow";
+import { Post } from "@/store/post";
+import defaultPicture from "@/assets/default-user-picture.png";
 
 const ProfilePage = () => {
-    const [user, setUser] = useState<UserProfile>({
-        nickname: "",
-        degree: "",
-        email: "",
-        picture: undefined
+    const { getUserProfile, updateUserProfile, user, getUserPostsById, loggedIn } = useUserProfileStore();
+    const [UpdatedUser, setUpdatedUser] = useState<UpdateUserProfile>({
+        nickname: user.nickname,
+        degree: user.degree,
+        picture: user.picture
     });
-    const { getUserProfile, updateUserProfile } = useUserProfileStore();
-    const { logout } = useAuthStore();
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [urlPicture, setUrlPicture] = useState(defaultPicture);
+    const { logout, requestPassword } = useAuthStore();
+    const [userPosts, setUserPosts] = useState<Post[]>();
 
     useEffect(() => {
-        const fetchUserProfile = async () => {
-            const { success, message, data: userFetched } = await getUserProfile();
-            if (!success) {
-                toaster.create({ description: message, title: 'Error', type: "error" });
-            } else {
-                setUser({ ...user, ...userFetched });
-            }
-        };
-        fetchUserProfile();
-    }, []);
-
-    async function handleUpdateUser() {
-        const { success, message, data: userUpdated } = await updateUserProfile({
+        setUpdatedUser({
             nickname: user.nickname,
             degree: user.degree,
-            picture: user.picture,
+            picture: undefined
         });
+    }, [user]);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            const { success, message, data: postsFetched } = await getUserPostsById(user._id);
+            if(!success) {
+                toaster.create({ description: message, title: 'Error', type: "error" });
+            } else {
+                setUserPosts(postsFetched);
+            }
+        };
+        if (loggedIn) {
+            fetchPosts();
+        }
+    },[user]);
+
+    useEffect(() => {
+        if (user.picture) {
+            setUrlPicture(`data:${user.picture.type};base64,${user.picture.data}`);            
+        }
+    }, [user.picture]);
+
+
+    async function handleUpdateUser() {
+        const { success, message, data: userUpdated } = await updateUserProfile(UpdatedUser);
         if (!success) {
             toaster.create({ description: message, title: 'Error', type: "error" });
         } else {
-            setUser({ ...user, ...userUpdated });
+            setUpdatedUser({ ...UpdatedUser, ...userUpdated });
             toaster.create({ description: message, title: 'Success', type: "success" });
         }
 
@@ -50,12 +66,30 @@ const ProfilePage = () => {
         if (!success) {
             toaster.create({ description: message, title: 'Error', type: "error" });
         } else {
+            toaster.create({ description: message, title: 'Success', type: "success" });
             globalRouter.navigate?.("/login");
         }
     }
 
+    const handleRequestPassword = async () => {
+        const { success, message } = await requestPassword(user);
+        if (!success) {
+            toaster.create({ description: message, title: 'Error', type: "error" });
+        } else {
+            toaster.create({ description: message, title: 'Success', type: "success" });
+        }
+    }
+
+    const handleUploadPicture = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const file = e.target.files[0];
+            setUpdatedUser({ ...UpdatedUser, picture: file });
+            setUrlPicture(URL.createObjectURL(file));
+        }
+    }
+
     return (
-        <Container background={"var(--white-500)"} color="black" borderRadius={4} px={10} py={10} mt={10} h={"100vh"}>
+        <Container background={"var(--white-500)"} color="black" borderRadius={4} px={10} py={10} mt={10} minH={"100vh"}>
             <Heading size={"4xl"} fontSize={"3xl"}>Meu Perfil</Heading>
             <hr />
             <Flex mt={10} mb={10} justifyContent={"space-evenly"} alignItems={"center"} flexWrap="wrap" gap="20px" position="relative">
@@ -74,11 +108,11 @@ const ProfilePage = () => {
                 </Button>
                 <VStack justifyContent={"flex-start"}>
                     <Image
-                        src={user.picture ? URL.createObjectURL(user.picture) : ""}
+                        src={urlPicture}
                         alt={"user profile picture"}
                         rounded={"full"}
-                        objectFit={"contain"}
                         boxSize="150px"
+                        objectFit="cover"
                     />
                     <Button
                         mt={"1rem"}
@@ -95,7 +129,7 @@ const ProfilePage = () => {
                         id="fileInput"
                         type="file"
                         display={"none"}
-                        onChange={(e) => { setUser({ ...user, picture: e.target.files?.[0] }) }}
+                        onChange={handleUploadPicture}
                     />
                 </VStack>
                 <SimpleGrid columns={2} gap="20px">
@@ -110,8 +144,8 @@ const ProfilePage = () => {
                             border="1px solid black"
                             placeholder="Enter a nickname"
                             name="nickname"
-                            value={user.nickname}
-                            onChange={(e) => setUser({ ...user, nickname: e.target.value })}
+                            value={UpdatedUser.nickname}
+                            onChange={(e) => setUpdatedUser({ ...UpdatedUser, nickname: e.target.value })}
                             width="100%" />
                     </Field>
                     <Field label="Degree" required>
@@ -125,8 +159,8 @@ const ProfilePage = () => {
                             border="1px solid black"
                             placeholder="Enter your degree"
                             name="degree"
-                            value={user.degree}
-                            onChange={(e) => setUser({ ...user, degree: e.target.value })}
+                            value={UpdatedUser.degree}
+                            onChange={(e) => setUpdatedUser({ ...UpdatedUser, degree: e.target.value })}
                             width="100%" />
                     </Field>
 
@@ -142,8 +176,22 @@ const ProfilePage = () => {
                             placeholder="Enter your email"
                             name="email"
                             value={user.email}
+                            readOnly
                             width="100%" />
                     </Field>
+                    <Box w="full">
+                        <Field label="Password" required>
+                            <Button 
+                                onClick={handleRequestPassword} 
+                                bg="cyan.600" 
+                                color="white" 
+                                _hover={{ bg: "cyan.700" }}
+                                w={"full"}
+                            >
+                                Reset Password
+                            </Button>
+                        </Field>
+                    </Box>
                 </SimpleGrid>
                 <Button
                     bg="cyan.600"
@@ -160,9 +208,22 @@ const ProfilePage = () => {
                     Save
                 </Button>
             </Flex>
-            <Heading size={"4xl"} fontSize={"3xl"}>Posts</Heading><hr /><HStack justifyContent={"flex-end"} alignItems={"center"} flexWrap="wrap" gap={2} mt={5}>
-                <Text fontSize={"lg"}>Novo Post</Text>
+            <Heading size={"4xl"} fontSize={"3xl"}>Posts</Heading>
+            <hr />
+            <HStack justifyContent={"flex-end"} alignItems={"center"} flexWrap="wrap" gap={2} mt={5} mb={0}>
+                <Text
+                    color="black"
+                    fontSize={"md"}
+                >
+                    Novo Post
+                </Text>
+                <CreatePostButton _redirect="/profile" />
             </HStack>
+            <Flex mt={5} flexDirection="column" gap={4}>
+                {userPosts && userPosts.map((post) => (
+                    <PostRow key={post._id} post={post} editable={true} />
+                ))}
+            </Flex>
         </Container>
     );
 }

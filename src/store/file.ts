@@ -20,7 +20,7 @@ interface FileCustomStore {
         message: string;
         data: FileCustomMetaData[];
     }>;
-    downloadFile: (fileId: string) => Promise<{ success: boolean; message: string; data: Blob }>;
+    downloadFile: (fileId: string) => Promise<{ success: boolean; message: string; data: Blob|null}>;
 }
 
 export const useFileStore = create<FileCustomStore>(() => ({
@@ -38,9 +38,9 @@ export const useFileStore = create<FileCustomStore>(() => ({
             return { success: false, message: "Failed to fetch files", data: "" };
         }
         }
-    },
-    downloadFile: async (fileId: string) => {
+    }, downloadFile : async (fileId: string) => {
         try {
+
          const response = await axios.get(`/api/files/download/${fileId}`, {
            responseType: "blob", 
          });
@@ -48,16 +48,15 @@ export const useFileStore = create<FileCustomStore>(() => ({
          return { success: true, message: "File downloaded", data: response.data };
 
         } catch (err: unknown) {
-        if (axios.isAxiosError(err)) {
-            return {
-            success: false,
-            message: err.response?.data?.message || err.request,
-            data: new Blob(),
-            };
-        } else {
-            return { success: false, message: "Failed to download file", data: new Blob() };
+            if (axios.isAxiosError(err)) {
+                return {
+                    success: false,
+                    message: err.response?.data?.message || "Erro ao baixar o arquivo",
+                    data: null,
+                };
+            }
+            return {success: false, message: "Erro inesperado", data: null};
         }
-        }
-    },
+    }
    
     }));

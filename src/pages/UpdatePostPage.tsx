@@ -1,7 +1,7 @@
-import { Button, Container, Heading, HStack, Input, VStack, SimpleGrid, Flex, Text } from "@chakra-ui/react";
+import { Button, Container, Heading, HStack, Input, VStack, SimpleGrid, Text } from "@chakra-ui/react";
 import { Field } from "@/components/ui/field";
-import { useState } from "react";
-import { PostCreated, usePostStore } from "@/store/post";
+import { useEffect, useState } from "react";
+import { Post, PostCreated, PostUpdated, usePostStore } from "@/store/post";
 import {
     MenuContent,
     MenuItem,
@@ -14,38 +14,58 @@ import {
 } from "@/components/ui/file-upload";
 import { toaster } from "@/components/ui/toaster";
 import { useUserProfileStore } from "@/store/user";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { IoMdArrowDropdown } from "react-icons/io";
 import UploadList from "@/components/UploadList";
 
-const CreatePostPage = () => {
+const UpdatePostPage = () => {
     const { user } = useUserProfileStore();
-    const [newPost, setNewPost] = useState<PostCreated>({
+    const { updatePost, getPostById } = usePostStore();
+    const [updatedPost, setUpdatedPost] = useState<PostUpdated>({
+        _id: "",
         title: "",
         content: "",
         files: [],
         author: user._id,
-        tags: []
+        tags: [],
     });
     const [selectedItems, setSelectedItems] = useState<{ semester?: string, course?: string, year?: string }>({});
-    const { createPost } = usePostStore();
-
-    const semesters = [1, 2, 3, 4, 5, 6, 7, 8];
-    const years = Array.from({ length: new Date().getFullYear() - 2016 }, (_, index) => 2017 + index);
-    const courses = ['Física', 'Computação'];
-
+    const { id } = useParams();
     const [params] = useSearchParams();
     const navigate = useNavigate();
 
     const onClose = () => {
         const redirect = params.get("_redirect") || "/";
         navigate(redirect, { replace: true });
-    }   
+    };
 
-    async function handleNewPost() {
+    useEffect(() => {
+        const fetchPost = async () => {
+            if (id) {
+                const { success, message, data } = await getPostById(id);
+                if (!success) {
+                    toaster.create({ description: message, title: 'Error', type: "error" });
+                } else {
+                    setUpdatedPost(data);
+                    setSelectedItems({
+                        semester: data.tags.find((tag: string) => tag.includes('Semestre')) || '',
+                        course: data.tags.find((tag: string) => courses.includes(tag)) || '',
+                        year: data.tags.find((tag: string) => tag.length === 4) || '',
+                    });
+                }
+            }
+        };
+        fetchPost();
+    }, [id]);
+
+    const semesters = [1, 2, 3, 4, 5, 6, 7, 8];
+    const years = Array.from({ length: new Date().getFullYear() - 2016 }, (_, index) => 2017 + index);
+    const courses = ['Física', 'Computação'];
+
+    async function handleUpdatePost() {
         const tags = Object.values(selectedItems) as string[];
 
-        const { success, message } = await createPost({ ...newPost, tags });
+        const { success, message } = await updatePost({ ...updatedPost, tags });
         
         if (!success) {
             toaster.create({ description: message, title: 'Error', type: "error" });
@@ -60,13 +80,15 @@ const CreatePostPage = () => {
     }
     
     function handleFileAccepted(details: any) {
-        const files = [details.files[details.files.length - 1]].concat(newPost.files || []);
-        setNewPost({...newPost, files });
+        const files = [details.files[details.files.length - 1]].concat(updatedPost.files || []);
+        setUpdatedPost({...updatedPost, files });
     }
+
+    if (!post) return null;
 
     return (
         <Container background={"var(--white-500)"} color="black" borderRadius={4} px={10} py={5} mt={10} h={"100vh"} position="relative" >
-            <Heading fontSize={"4xl"} size={"4xl"}>Criar Post</Heading>
+            <Heading fontSize={"4xl"} size={"4xl"}>Atualizar Post</Heading>
             <hr />
             <SimpleGrid columns={3} spaceX={10} mt={"14"}>
                 <VStack spaceY={5}>
@@ -78,8 +100,8 @@ const CreatePostPage = () => {
                             border="2px dashed black"
                         />
                         <UploadList
-                            files={newPost.files}
-                            onRemoveFile={(file) => { setNewPost({ ...newPost, files: (newPost.files || []).filter(f => f !== file) }) }}
+                            files={updatedPost.files}
+                            onRemoveFile={(file) => { setUpdatedPost({ ...updatedPost, files: (updatedPost.files || []).filter(f => f !== file) }) }}
                         />
                     </FileUploadRoot>
                 </VStack>
@@ -96,8 +118,8 @@ const CreatePostPage = () => {
                             placeholder="Title"
                             name="title"
                             type="text"
-                            value={newPost.title}
-                            onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
+                            value={updatedPost.title}
+                            onChange={(e) => setUpdatedPost({ ...updatedPost, title: e.target.value })}
                             width="100%"
                         />
                     </Field>
@@ -113,8 +135,8 @@ const CreatePostPage = () => {
                             placeholder="Content"
                             name="content"
                             type="text"
-                            value={newPost.content}
-                            onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
+                            value={updatedPost.content}
+                            onChange={(e) => setUpdatedPost({ ...updatedPost, content: e.target.value })}
                             width="100%"
                         />
                     </Field>
@@ -186,7 +208,7 @@ const CreatePostPage = () => {
                     _hover={{ bg: "cyan.700" }}
                     type="submit"
                     px={8}
-                    onClick={handleNewPost}
+                    onClick={handleUpdatePost}
                 >
                     Save
                 </Button>
@@ -195,4 +217,4 @@ const CreatePostPage = () => {
     );
 }
 
-export default CreatePostPage;
+export default UpdatePostPage;

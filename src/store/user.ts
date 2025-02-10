@@ -1,14 +1,17 @@
 import axios from "@/utils/axios";
 import { create } from "zustand";
+import { Post } from "./post";
 
 export interface UserProfile {
   _id: string;
   email: string;
   nickname: string;
-  picture?: File;
+  picture?: any;
   degree?: string;
   verified?: boolean;
 }
+
+export interface UpdateUserProfile extends Omit<UserProfile, 'email' | 'verified' | '_id'>{}
 
 
 export interface UserProfileStore {
@@ -18,7 +21,7 @@ export interface UserProfileStore {
     success: boolean;
     message: string;
   }>;
-  updateUserProfile: (user: Omit<UserProfile, 'email'>) => Promise<{
+  updateUserProfile: (UpdatedUser: UpdateUserProfile) => Promise<{
     success: boolean;
     message: string;
     data: UserProfile;
@@ -27,6 +30,11 @@ export interface UserProfileStore {
     success: boolean;
     data: UserProfile;
     message: string;
+  }>;
+  getUserPostsById: (id: string) => Promise <{
+    success:boolean;
+    message: string;
+    data: Post[];
   }>;
 }
 
@@ -43,12 +51,12 @@ export const useUserProfileStore = create<UserProfileStore>((set) => ({
   getUserProfile: async () => {
     try {
       const res = await axios.get("/api/users/profile");
-
-      set((state) => ({ 
-        user: { ...state.user, ...res.data.data },
-        loggedIn: true,
-       }));
-
+      if (res.data.success) {
+        set(() => ({
+          user: res.data.data,
+          loggedIn: true,
+        }));
+      }
 
       return { success: res.data.success, message: res.data.message };
     } catch (err: unknown) {
@@ -62,9 +70,14 @@ export const useUserProfileStore = create<UserProfileStore>((set) => ({
       }
     }
   },
-  updateUserProfile: async (user) => {
+  updateUserProfile: async (UpdatedUser) => {
     try {
-      const res = await axios.put("/api/users/profile/settings", user);
+      const formData = new FormData();
+      formData.append("nickname", UpdatedUser.nickname);
+      formData.append("degree", UpdatedUser.degree || "");
+      formData.append("file", UpdatedUser.picture || "");
+
+      const res = await axios.put("/api/users/profile/settings", formData);
 
       set((state) => ({
         user: { ...state.user, ...res.data.data },
@@ -96,5 +109,21 @@ export const useUserProfileStore = create<UserProfileStore>((set) => ({
         return { success: false, message: "Failed to fetch user", data: "" };
       }
     }
+  },
+  getUserPostsById: async (id) => {
+    try {
+      const res = await axios.get(`/api/users/profile/id/${id}/posts`);
+
+      return res.data;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        return {
+          success: false,
+          message: err.response?.data?.message || err.request,
+        };
+      } else {
+        return { success: false, message: "Failed to get posts", data: "" };
+      }
+    } 
   }
 }));

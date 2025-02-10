@@ -12,20 +12,23 @@ import CreatePostButton from "./CreatePostButton";
 const Navbar = () => {
 
     const [nickname, setNickname] = useState("Conta");
-    const { getUserProfile, user } = useUserProfileStore();
+    const { getUserProfile, user, loggedIn } = useUserProfileStore();
 
     useEffect(() => {
         const fetchUserProfile = async () => {
             const { success, message } = await getUserProfile();
-            if(!success) {
+            if (!success) {
                 toaster.create({ description: message, title: 'Error', type: "error" });
-            } else {
-                setNickname(user.nickname);
             }
         };
         fetchUserProfile();
-    }, [nickname]);
+    }, [getUserProfile]);
 
+    useEffect(() => {
+        if (loggedIn) {
+            setNickname(user.nickname);
+        }
+    }, [user]);
 
 
     return (

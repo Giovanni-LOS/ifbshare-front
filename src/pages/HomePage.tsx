@@ -22,7 +22,7 @@ const HomePage = () => {
     }, []);
 
     return (
-        <Container background={"var(--white-500)"} color="black" borderRadius={4} px={10} py={5} mt={10} h={"100vh"} position="relative">
+        <Container background={"var(--white-500)"} color="black" borderRadius={4} px={10} py={5} mt={10} minH={"100vh"} position="relative">
             <Flex bg={"whiteAlpha.500"} justify="center" gap={8} borderRadius={4} position="absolute" top={0} left={0} width="100%" align={"center"} px={10}>
                 <Text flex={1} fontSize={"xl"}>Nome</Text>
                 <Text fontSize={"xl"}>Uploader</Text>
