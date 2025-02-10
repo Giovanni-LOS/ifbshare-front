@@ -24,7 +24,7 @@ const Navbar = () => {
             }
         };
         fetchUserProfile();
-    }, []);
+    }, [nickname]);
 
 
 

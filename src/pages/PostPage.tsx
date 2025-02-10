@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Box, Text, VStack, HStack, Button, Spinner, Container} from '@chakra-ui/react';
+import {Box, Text, VStack, HStack, Button, Spinner, Container, Flex} from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import {useUserProfileStore} from "@/store/user.ts";
@@ -101,32 +101,64 @@ const PostPage = () => {
     }
 
     return (
-        <Container p={4} minH="100vh">
+        <Container
+            background="var(--white-500)"
+            color="black"
+            borderRadius={4}
+            px={10}
+            py={5}
+            mt={10}
+            minH="100vh"
+            position="relative"
+        >
+            <Flex
+                bg="whiteAlpha.500"
+                justify="space-between"
+                align="center"
+                gap={8}
+                borderRadius={4}
+                position="absolute"
+                top={0}
+                left={0}
+                width="100%"
+                px={10}
+                py={2}
+            >
+                <Text fontSize="xl" fontWeight="bold">
+                    {authorName || "Carregando autor..."}
+                </Text>
+                <Text fontSize="md">{new Date(post.createdAt).toLocaleDateString()}</Text>
+            </Flex>
+
             <Box
-                bg="var(--white-500)"
-                color={"var(--black)"}
+                bg="gray.300"
                 borderRadius="md"
                 boxShadow="md"
-                p={4}
-                mb={6}
+                p={6}
+                mt={16} // Distância do cabeçalho
             >
-                <HStack justify="space-between" mb={4}>
-                    <Text fontWeight="bold">{authorName || "Carregando autor..."}</Text>
-                    <Text fontSize="sm" color="gray.500">
-                        {new Date(post.createdAt).toLocaleDateString()}
-                    </Text>
-                </HStack>
-
                 <VStack align="start">
-                    <Text fontWeight="bold" fontSize="xl">
+                    <Text fontWeight="bold" fontSize="2xl">
                         {post.title}
                     </Text>
-                    <Text>{post.content}</Text>
+                    <Text fontSize="md">{post.content}</Text>
                 </VStack>
 
-                <HStack mt={4}>
-                    <Button colorScheme="teal" onClick={handleLoadFiles}>Baixar</Button>
-                </HStack>
+                <Flex justify="flex-end" mt={6} gap={4}>
+                    <Button
+                        bg="#1CA7AF"
+                        color="white"
+                        borderRadius="4px"
+                        px={8}
+                        _hover={{ bg: "#178C94" }} // Efeito de hover sutil
+                        _active={{ bg: "#126D72" }} // Cor quando clicado
+                        onClick={handleLoadFiles}
+                    >
+                        Baixar
+                    </Button>
+
+
+                </Flex>
             </Box>
         </Container>
     );
