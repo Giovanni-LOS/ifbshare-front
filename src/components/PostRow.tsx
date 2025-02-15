@@ -1,4 +1,4 @@
-import { FileCustom, FileCustomMetaData, useFileStore } from "@/store/file";
+import { FileCustomMetaData, useFileStore } from "@/store/file";
 import { Post } from "@/store/post";
 import { useUserProfileStore } from "@/store/user";
 import { dateDistanceToToday } from "@/utils/dateFormatter";
@@ -10,6 +10,9 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import { BiSolidEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 
+// Defina a URL base da API usando a variável de ambiente
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 interface PostRowProps {
     post: Post;
     editable?: boolean;
@@ -18,7 +21,7 @@ interface PostRowProps {
 
 const PostRow = ({ post, editable = false, _redirect }: PostRowProps) => {
     const [author, setAuthor] = useState("");
-    const [filesMetaData, setFilesMetaData] = useState<FileCustomMetaData[]>([]);
+    const [_, setFilesMetaData] = useState<FileCustomMetaData[]>([]);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Estado para modal
     const { getUserById } = useUserProfileStore();
     const { getFilesMetaData, downloadFile } = useFileStore();
@@ -63,7 +66,8 @@ const PostRow = ({ post, editable = false, _redirect }: PostRowProps) => {
 
     async function handleConfirmDelete() {
         try {
-            const response = await fetch(`/api/posts/${post._id}`, { method: "DELETE" });
+            // Use a URL base definida para fazer a requisição DELETE
+            const response = await fetch(`${API_URL}/api/posts/${post._id}`, { method: "DELETE" });
 
             if (!response.ok) {
                 const { message } = await response.json();
@@ -85,7 +89,7 @@ const PostRow = ({ post, editable = false, _redirect }: PostRowProps) => {
             setAuthor(data.nickname);
         };
         fetchAuthor();
-    }, []);
+    }, [post.author, getUserById]);
 
     return (
         <>
@@ -135,7 +139,6 @@ const PostRow = ({ post, editable = false, _redirect }: PostRowProps) => {
                             >
                                 Cancelar
                             </Button>
-
                         </Flex>
                     </Box>
                 </Box>
