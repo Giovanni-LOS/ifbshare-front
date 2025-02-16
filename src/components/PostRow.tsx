@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "@/utils/axios.ts";
 import { FileCustomMetaData, useFileStore } from "@/store/file";
 import { Post } from "@/store/post";
 import { useUserProfileStore } from "@/store/user";
@@ -62,7 +62,7 @@ const PostRow = ({ post, editable = false, _redirect }: PostRowProps) => {
 
     async function handleConfirmDelete() {
         try {
-            const response = await axios.delete(`/api/posts/${post._id}`);
+            const response = await api.delete(`/api/posts/${post._id}`);
             toaster.create({ description: "Post deleted successfully", title: "Success", type: "success" });
             setIsDeleteModalOpen(false);
             window.location.reload();
