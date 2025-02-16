@@ -4,6 +4,7 @@ import api from "@/utils/axios.ts";
 import {useUserProfileStore} from "@/store/user.ts";
 import {FileCustomMetaData, useFileStore} from "@/store/file.ts";
 import {toaster} from "@/components/ui/toaster";
+import {useParams} from "react-router-dom";
 
 interface Post {
     _id: string;
