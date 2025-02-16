@@ -1,3 +1,4 @@
+import axios from "axios";
 import { FileCustomMetaData, useFileStore } from "@/store/file";
 import { Post } from "@/store/post";
 import { useUserProfileStore } from "@/store/user";
@@ -10,9 +11,6 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import { BiSolidEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 
-// Defina a URL base da API usando a variável de ambiente
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
 interface PostRowProps {
     post: Post;
     editable?: boolean;
@@ -21,8 +19,8 @@ interface PostRowProps {
 
 const PostRow = ({ post, editable = false, _redirect }: PostRowProps) => {
     const [author, setAuthor] = useState("");
-    const [_, setFilesMetaData] = useState<FileCustomMetaData[]>([]);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Estado para modal
+    const [filesMetaData, setFilesMetaData] = useState<FileCustomMetaData[]>([]);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const { getUserById } = useUserProfileStore();
     const { getFilesMetaData, downloadFile } = useFileStore();
     const navigate = useNavigate();
@@ -53,33 +51,24 @@ const PostRow = ({ post, editable = false, _redirect }: PostRowProps) => {
             toaster.create({ description: "Failed to fetch files", title: "Error", type: "error" });
         } else {
             setFilesMetaData(files);
-            files.forEach((file) => {
-                handleDownloadFiles(file, e);
-            });
+            files.forEach((file) => handleDownloadFiles(file, e));
         }
     }
 
     function handleDeletePost(e: React.MouseEvent) {
         e.stopPropagation();
-        setIsDeleteModalOpen(true); // Abre o modal de confirmação
+        setIsDeleteModalOpen(true);
     }
 
     async function handleConfirmDelete() {
         try {
-            // Use a URL base definida para fazer a requisição DELETE
-            const response = await fetch(`${API_URL}/api/posts/${post._id}`, { method: "DELETE" });
-
-            if (!response.ok) {
-                const { message } = await response.json();
-                toaster.create({ description: message, title: "Error", type: "error" });
-                return;
-            }
-
+            const response = await axios.delete(`/api/posts/${post._id}`);
             toaster.create({ description: "Post deleted successfully", title: "Success", type: "success" });
             setIsDeleteModalOpen(false);
-            window.location.reload(); // Ou remover o post da lista manualmente
+            window.location.reload();
         } catch (error) {
-            toaster.create({ description: "Failed to delete post", title: "Error", type: "error" });
+            const message = error.response?.data?.message || "Failed to delete post";
+            toaster.create({ description: message, title: "Error", type: "error" });
         }
     }
 
@@ -89,115 +78,40 @@ const PostRow = ({ post, editable = false, _redirect }: PostRowProps) => {
             setAuthor(data.nickname);
         };
         fetchAuthor();
-    }, [post.author, getUserById]);
+    }, []);
 
     return (
         <>
-            {/* Modal de confirmação */}
             {isDeleteModalOpen && (
-                <Box
-                    position="fixed"
-                    top={0}
-                    left={0}
-                    width="100vw"
-                    height="100vh"
-                    backgroundColor="rgba(0,0,0,0.5)"
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    zIndex={1000}
-                >
+                <Box position="fixed" top={0} left={0} width="100vw" height="100vh" backgroundColor="rgba(0,0,0,0.5)" display="flex" justifyContent="center" alignItems="center" zIndex={1000}>
                     <Box bg="white" p={6} rounded="md" textAlign="center" boxShadow="lg">
                         <Text fontSize="lg" mb={4}>Tem certeza que deseja excluir este post?</Text>
                         <Flex justifyContent="center" gap={4}>
-                            <Button
-                                colorScheme="red"
-                                onClick={handleConfirmDelete}
-                                _hover={{ bg: "red.600", transform: "scale(1.05)" }}
-                                _active={{ bg: "red.700" }}
-                                transition="all 0.2s ease-in-out"
-                                borderRadius="full"
-                                px={6}
-                                py={2}
-                                fontWeight="bold"
-                                shadow="md"
-                            >
+                            <Button colorScheme="red" onClick={handleConfirmDelete} _hover={{ bg: "red.600", transform: "scale(1.05)" }} _active={{ bg: "red.700" }} transition="all 0.2s ease-in-out" borderRadius="full" px={6} py={2} fontWeight="bold" shadow="md">
                                 Sim, Excluir
                             </Button>
-
-                            <Button
-                                onClick={() => setIsDeleteModalOpen(false)}
-                                bg="gray.200"
-                                _hover={{ bg: "gray.300", transform: "scale(1.05)" }}
-                                _active={{ bg: "gray.400" }}
-                                transition="all 0.2s ease-in-out"
-                                borderRadius="full"
-                                px={6}
-                                py={2}
-                                fontWeight="bold"
-                                shadow="md"
-                            >
+                            <Button onClick={() => setIsDeleteModalOpen(false)} bg="gray.200" _hover={{ bg: "gray.300", transform: "scale(1.05)" }} _active={{ bg: "gray.400" }} transition="all 0.2s ease-in-out" borderRadius="full" px={6} py={2} fontWeight="bold" shadow="md">
                                 Cancelar
                             </Button>
                         </Flex>
                     </Box>
                 </Box>
             )}
-
-            {/* Componente do post */}
             <Flex gap={2} justify="center">
-                <Box
-                    p={6}
-                    flex={1}
-                    bg="#dddbcb"
-                    rounded={"md"}
-                    position="relative"
-                    onClick={() => navigate(`/post/${post._id}`)}
-                    cursor="pointer"
-                >
+                <Box p={6} flex={1} bg="#dddbcb" rounded={"md"} position="relative" onClick={() => navigate(`/post/${post._id}`)} cursor="pointer">
                     <Text fontSize="md" color="black">{post.title}</Text>
-                    <Button
-                        position="absolute"
-                        right={0}
-                        top={0}
-                        size={"sm"}
-                        margin={0}
-                        padding={0}
-                        bg="transparent"
-                        _hover={{ bg: "transparent" }}
-                        onClick={(e) => handleLoadFiles(e)}
-                    >
+                    <Button position="absolute" right={0} top={0} size={"sm"} margin={0} padding={0} bg="transparent" _hover={{ bg: "transparent" }} onClick={(e) => handleLoadFiles(e)}>
                         <IoMdDownload color="var(--mint-green)" size={20} />
                     </Button>
                     {editable && (
                         <>
-                            <Button
-                                position="absolute"
-                                right={6}
-                                top={0}
-                                size={"sm"}
-                                margin={0}
-                                padding={0}
-                                bg="transparent"
-                                _hover={{ bg: "transparent" }}
-                                onClick={handleDeletePost}
-                            >
+                            <Button position="absolute" right={6} top={0} size={"sm"} margin={0} padding={0} bg="transparent" _hover={{ bg: "transparent" }} onClick={handleDeletePost}>
                                 <FaRegTrashCan color="#333333" size={20} />
                             </Button>
-                            <Button
-                                position="absolute"
-                                right={12}
-                                top={0}
-                                size={"sm"}
-                                margin={0}
-                                padding={0}
-                                bg="transparent"
-                                _hover={{ bg: "transparent" }}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigate(`/update-post/${post._id}?_redirect=${_redirect || ''}`, { replace: true });
-                                }}
-                            >
+                            <Button position="absolute" right={12} top={0} size={"sm"} margin={0} padding={0} bg="transparent" _hover={{ bg: "transparent" }} onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/update-post/${post._id}?_redirect=${_redirect || ''}`, { replace: true });
+                            }}>
                                 <BiSolidEdit color="#333333" size={20} />
                             </Button>
                         </>
