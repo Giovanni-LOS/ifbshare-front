@@ -61,7 +61,7 @@ const PostPage = () => {
     useEffect(() => {
         const fetchPostAndAuthor = async () => {
             try {
-                const postResponse = await api.get(`/posts/${id}`);
+                const postResponse = await api.get(`/api/posts/${id}`);
                 const fetchedPost = postResponse.data.data as Post;
                 setPost(fetchedPost);
 
