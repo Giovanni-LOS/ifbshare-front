@@ -1,8 +1,9 @@
-import { Button, Container, Image, Input, LinkBox, Text, VStack } from "@chakra-ui/react";
+import { Button, Container, Image, Input, LinkBox, Text, VStack, IconButton, Box } from "@chakra-ui/react";
 import { Link, useNavigate } from 'react-router-dom';
 import { toaster } from "../components/ui/toaster.jsx"
 import { useState } from "react";
 import { useAuthStore } from "@/store/auth";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import logo from "@/assets/logo.svg"
 
 const SignInPage = () => {
@@ -13,6 +14,8 @@ const SignInPage = () => {
         password: "",
         confirmPassword: "",
     });
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const navigate = useNavigate();
 
@@ -78,33 +81,59 @@ const SignInPage = () => {
                         value={newUser.email}
                         onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
                     />
-                    <Input
-                        color={"black"}
-                        size="sm"
-                        px={".5rem"}
-                        py={".125rem"}
-                        fontSize="sm"
-                        bg="white"
-                        placeholder="Password(at least 8 with letters, numbers, and symbols)"
-                        name="password"
-                        type="password"
-                        value={newUser.password}
-                        onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                    />
-                    <Input
-                        color={"black"}
-                        size="sm"
-                        px={".5rem"}
-                        py={".125rem"}
-                        fontSize="sm"
-                        bg="white"
-                        placeholder="Confirm Password"
-                        name="confirmPassword"
-                        type="password"
-                        value={newUser.confirmPassword}
-                        onChange={(e) => setNewUser({ ...newUser, confirmPassword: e.target.value })}
-                    />
-                    <Button onClick={handleSubmit} mt={"0.5rem"} bg="cyan.600" _hover={{ bg: "cyan.700" }} color="white">
+                    <Box position="relative" width="100%">
+                        <Input
+                            color={"black"}
+                            size="sm"
+                            px={".5rem"}
+                            py={".125rem"}
+                            fontSize="sm"
+                            bg="white"
+                            placeholder="Password(at least 8 with letters, numbers, and symbols)"
+                            name="password"
+                            type={showPassword ? "text" : "password"}
+                            value={newUser.password}
+                            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                            width="100%"
+                        />
+                        <IconButton
+                            position="absolute"
+                            right={0}
+                            top={0}
+                            size="sm"
+                            bg="transparent"
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? <FaEyeSlash color={"black"} /> : <FaEye  color={"black"}/>}
+                        </IconButton>
+                    </Box>
+                    <Box position="relative" width="100%">
+                        <Input
+                            color={"black"}
+                            size="sm"
+                            px={".5rem"}
+                            py={".125rem"}
+                            fontSize="sm"
+                            bg="white"
+                            placeholder="Confirm Password"
+                            name="confirmPassword"
+                            type={showConfirmPassword ? "text" : "password"}
+                            value={newUser.confirmPassword}
+                            onChange={(e) => setNewUser({ ...newUser, confirmPassword: e.target.value })}
+                            width="100%"
+                        />
+                        <IconButton
+                            position="absolute"
+                            right={0}
+                            top={0}
+                            size="sm"
+                            bg="transparent"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                            {showConfirmPassword ? <FaEyeSlash color={"black"} /> : <FaEye  color={"black"}/>}
+                        </IconButton>
+                    </Box>
+                    <Button onClick={handleSubmit} mt={"0.5rem"} bg="cyan.600" _hover={{ bg: "cyan.700" }} color="white" size="lg" w={"100%"}>
                         Register
                     </Button>
                     <LinkBox>

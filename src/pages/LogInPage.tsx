@@ -1,16 +1,18 @@
-import { Button, Container, Flex, Image, Input, LinkBox, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, IconButton, Image, Input, LinkBox, Text, VStack } from "@chakra-ui/react";
 import { Checkbox } from "@/components/ui/checkbox"
 import { Link, useNavigate } from 'react-router-dom';
 import { toaster } from "../components/ui/toaster";
 import { useState } from "react";
 import { useAuthStore } from "@/store/auth";
 import logo from "@/assets/logo.svg";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 const LogInPage = () => {
     const [user, setUser] = useState({
         email: "",
         password: ""
     });
+    const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate();
     const { login } = useAuthStore();
@@ -50,19 +52,31 @@ const LogInPage = () => {
                         value={user.email}
                         onChange={(e) => setUser({ ...user, email: e.target.value })}
                     />
-                    <Input
-                        color={"black"}
-                        size="sm"
-                        px={".5rem"}
-                        py={".125rem"}
-                        fontSize="sm"
-                        bg="white"
-                        placeholder="Password"
-                        name="password"
-                        type="password"
-                        value={user.password}
-                        onChange={(e) => setUser({ ...user, password: e.target.value })}
-                    />
+                    <Box w="full" position="relative" p={0} m={0}>
+                        <Input
+                            color={"black"}
+                            size="sm"
+                            px={".5rem"}
+                            py={".125rem"}
+                            fontSize="sm"
+                            bg="white"
+                            placeholder="Password"
+                            name="password"
+                            type={showPassword ? "text" : "password"}
+                            value={user.password}
+                            onChange={(e) => setUser({ ...user, password: e.target.value })}
+                        />
+                        <IconButton
+                            position="absolute"
+                            right={0}
+                            top={0}
+                            size="sm"
+                            bg="transparent"
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? <FaEyeSlash color={"black"} /> : <FaEye  color={"black"}/>}
+                        </IconButton>
+                    </Box>
                     <Flex flexDir={"row"} justifyContent={"space-between"} alignItems="center" w="full">
                         <Checkbox size="sm" defaultChecked>
                             Remember Me
