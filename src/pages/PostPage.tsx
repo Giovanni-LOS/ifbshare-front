@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {Box, Text, VStack, HStack, Button, Spinner, Container, Flex} from '@chakra-ui/react';
+import {Box, Text, VStack, Button, Spinner, Container, Flex} from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from "@/utils/axios";
 import {useUserProfileStore} from "@/store/user.ts";
 import {FileCustomMetaData, useFileStore} from "@/store/file.ts";
 import {toaster} from "@/components/ui/toaster";
