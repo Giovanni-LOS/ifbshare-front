@@ -9,7 +9,7 @@ import { IoMdDownload } from "react-icons/io";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { BiSolidEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "@/utils/axios";
 
 interface PostRowProps {
     post: Post;
