@@ -10,6 +10,7 @@ import ProfilePage from "./pages/ProfilePage";
 import Navbar from "./components/Navbar";
 import PostPage from "./pages/PostPage";
 import CreatePostPage from "./pages/CreatePostPage";
+import UpdatePostPage from "./pages/UpdatePostPage";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/profile" element={<Box><Navbar /><ProfilePage /></Box>} />
           <Route path="/post/:id" element={<Box><Navbar /><PostPage/></Box>} />
           <Route path="/create-post" element={<Box><Navbar /><CreatePostPage/></Box>} />
+          <Route path="/update-post/:id" element={<Box><Navbar /><UpdatePostPage/></Box>} />
         </Routes>
       </Box>
     </>

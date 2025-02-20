@@ -2,31 +2,23 @@ import axios from "axios";
 import { globalRouter } from "./globalRouter";
 import { toaster } from "@/components/ui/toaster";
 
-// Cria uma instância customizada do axios
-const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000",
-    withCredentials: true, // Se necessário enviar cookies
-});
+axios.defaults.withCredentials = true;
 
-// Interceptor para tratar respostas de erro
-api.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response) {
-            const { status } = error.response;
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      const { status } = error.response;
 
-            if (status === 401 || status === 403) {
-                toaster.create({
-                    description: error.response?.message,
-                    title: 'Error',
-                    type: "error"
-                });
-                globalRouter.navigate?.("/login");
-            }
-        }
+      if (status === 401 || status === 403) {
+        toaster.create({ description: error.response?.message, title: 'Error', type: "error" });
 
-        return Promise.reject(error);
+        globalRouter.navigate?.("/login");
+      }
     }
+
+    return Promise.reject(error);
+  }
 );
 
-export default api;
+export default axios;

@@ -1,7 +1,7 @@
 import { Button, Container, Heading, HStack, Input, VStack, SimpleGrid, Text } from "@chakra-ui/react";
 import { Field } from "@/components/ui/field";
 import { useEffect, useState } from "react";
-import { Post, PostCreated, PostUpdated, usePostStore } from "@/store/post";
+import { PostUpdated, usePostStore } from "@/store/post";
 import {
     MenuContent,
     MenuItem,
@@ -13,26 +13,27 @@ import {
     FileUploadRoot,
 } from "@/components/ui/file-upload";
 import { toaster } from "@/components/ui/toaster";
-import { useUserProfileStore } from "@/store/user";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { IoMdArrowDropdown } from "react-icons/io";
 import UploadList from "@/components/UploadList";
+import { FileCustomMetaData, useFileStore } from "@/store/file";
 
 const UpdatePostPage = () => {
-    const { user } = useUserProfileStore();
     const { updatePost, getPostById } = usePostStore();
     const [updatedPost, setUpdatedPost] = useState<PostUpdated>({
         _id: "",
         title: "",
         content: "",
         files: [],
-        author: user._id,
         tags: [],
     });
+    const [filesFetched, setFilesFetched] = useState<FileCustomMetaData[]>([]);
+    const [filesDeleted, setFilesDeleted] = useState<string[]>([]);
     const [selectedItems, setSelectedItems] = useState<{ semester?: string, course?: string, year?: string }>({});
     const { id } = useParams();
     const [params] = useSearchParams();
     const navigate = useNavigate();
+    const { getFilesMetaData, postFile, deleteFile } = useFileStore();
 
     const onClose = () => {
         const redirect = params.get("_redirect") || "/";
@@ -47,15 +48,32 @@ const UpdatePostPage = () => {
                     toaster.create({ description: message, title: 'Error', type: "error" });
                 } else {
                     setUpdatedPost(data);
-                    setSelectedItems({
-                        semester: data.tags.find((tag: string) => tag.includes('Semestre')) || '',
-                        course: data.tags.find((tag: string) => courses.includes(tag)) || '',
-                        year: data.tags.find((tag: string) => tag.length === 4) || '',
-                    });
+
+                    if(data.tags){
+                        setSelectedItems({
+                            semester: data.tags.find((tag: string) => tag.includes('Semestre')) || '',
+                            course: data.tags.find((tag: string) => courses.includes(tag)) || '',
+                            year: data.tags.find((tag: string) => tag.length === 4) || '',
+                        });
+                    }
                 }
             }
         };
         fetchPost();
+    }, [id]);
+
+    useEffect(() => {
+        const handleLoadFiles = async () => {
+            if (id) {
+                const { success, data: files } = await getFilesMetaData(id);
+                if (!success) {
+                    toaster.create({ description: "Failed to fetch files", title: "Error", type: "error" });
+                } else {
+                    setFilesFetched(files);
+                }
+            }
+        };
+        handleLoadFiles();
     }, [id]);
 
     const semesters = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -65,15 +83,48 @@ const UpdatePostPage = () => {
     async function handleUpdatePost() {
         const tags = Object.values(selectedItems) as string[];
 
-        const { success, message } = await updatePost({ ...updatedPost, tags });
+        const { success, message } = await updatePost({
+            _id: updatedPost._id,
+            title: updatedPost.title,
+            content: updatedPost.content,
+            tags
+        });
         
         if (!success) {
             toaster.create({ description: message, title: 'Error', type: "error" });
         } else {
             toaster.create({ description: message, title: 'Success', type: "success" });
-            onClose();
         }
     }
+
+    const handleFileUpload = async () => {
+        if(!updatedPost.files) return;
+
+        const { success, message } = await postFile(updatedPost._id, updatedPost.files);
+
+        if (!success) {
+            toaster.create({ description: message, title: 'Error', type: "error" });
+        }
+    };
+
+    const handleFileDelete = async () => {
+        if(!filesDeleted) return;
+        let allStatus = {
+            success: true,
+            message: "",
+        };
+
+        filesDeleted.forEach(async (fileId) => {
+             const { success, message } = await deleteFile(updatedPost._id, fileId);
+             if(!success) {
+                allStatus.success = success;
+                allStatus.message = message;
+             }
+        });
+        if(!allStatus.success) {
+            toaster.create({ description: allStatus.message, title: 'Error', type: "error" });
+        }
+    };
 
     function handleSelectedItem(type: string, value: { value: string }) {
         setSelectedItems({ ...selectedItems, [type]: value.value });
@@ -83,8 +134,6 @@ const UpdatePostPage = () => {
         const files = [details.files[details.files.length - 1]].concat(updatedPost.files || []);
         setUpdatedPost({...updatedPost, files });
     }
-
-    if (!post) return null;
 
     return (
         <Container background={"var(--white-500)"} color="black" borderRadius={4} px={10} py={5} mt={10} h={"100vh"} position="relative" >
@@ -99,10 +148,24 @@ const UpdatePostPage = () => {
                             background={"transparent"}
                             border="2px dashed black"
                         />
+                        {updatedPost.files && <><Heading fontSize={"2xl"} size={"2xl"}>Novos Arquivos</Heading>
+                        <hr />
+
                         <UploadList
                             files={updatedPost.files}
                             onRemoveFile={(file) => { setUpdatedPost({ ...updatedPost, files: (updatedPost.files || []).filter(f => f !== file) }) }}
-                        />
+                        /></>}
+
+                        {filesFetched.length !== 0 && <><Heading fontSize={"2xl"} size={"2xl"}>Arquivos Anteriores</Heading>
+                        <hr />
+
+                        <UploadList
+                            files={filesFetched}
+                            onRemoveFile={(file) => { 
+                                setFilesFetched((filesFetched || []).filter(f => f !== file));
+                                setFilesDeleted([...filesDeleted, file._id])
+                            }}
+                        /></>}
                     </FileUploadRoot>
                 </VStack>
                 <VStack spaceY={5}>
@@ -208,7 +271,12 @@ const UpdatePostPage = () => {
                     _hover={{ bg: "cyan.700" }}
                     type="submit"
                     px={8}
-                    onClick={handleUpdatePost}
+                    onClick={() => {
+                        handleUpdatePost();
+                        handleFileUpload();
+                        handleFileDelete();
+                        onClose();
+                    }}
                 >
                     Save
                 </Button>

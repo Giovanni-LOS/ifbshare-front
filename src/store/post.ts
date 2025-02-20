@@ -14,7 +14,7 @@ export interface Post {
 export interface PostCreated extends Omit<Post, "_id" | "createdAt" | "updatedAt"> {
     files?: File[];
 }
-export interface PostUpdated extends Omit<Post, "createdAt" | "updatedAt"> {
+export interface PostUpdated extends Omit<Post, "createdAt" | "updatedAt" | "author"> {
     files?: File[];
 }
 
@@ -30,6 +30,16 @@ export interface PostStore {
         message: string;
         data: Post[];
     }>;
+    updatePost: (post: PostUpdated) => Promise<{
+      success: boolean;
+      message: string;
+      data: Post[];
+    }>;
+    getPostById: (id: string) => Promise<{
+      success: boolean;
+      message: string;
+      data: Post;
+    }>
 }
 
 export const usePostStore = create<PostStore>(() => ({
@@ -74,5 +84,37 @@ export const usePostStore = create<PostStore>(() => ({
                   return { success: false, message: "Failed to get posts", data: "" };
                 }
               } 
+        },
+        updatePost: async (post) => {
+            try {
+                const res = await axios.put(`/api/posts/${post._id}`, post);
+
+                return res.data;
+              } catch (err: unknown) {
+                if (axios.isAxiosError(err)) {
+                  return {
+                    success: false,
+                    message: err.response?.data?.message || err.request,
+                  };
+                } else {
+                  return { success: false, message: "Failed to create post", data: "" };
+                }
+              } 
+        },
+        getPostById: async (id) => {
+          try {
+            const res = await axios.get(`/api/posts/${id}`);
+
+            return res.data;
+          } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+              return {
+                success: false,
+                message: err.response?.data?.message || err.request,
+              };
+            } else {
+              return { success: false, message: "Failed to get posts", data: "" };
+            }
+          } 
         }
 }));
