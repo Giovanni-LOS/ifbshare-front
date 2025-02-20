@@ -56,6 +56,7 @@ const RequestPasswordPage = () => {
                             bg="cyan.600" 
                             color="white" 
                             _hover={{ bg: "cyan.700" }}
+                            px={6}
                         >
                             Reset Password
                         </Button>
@@ -66,6 +67,7 @@ const RequestPasswordPage = () => {
                             bg="cyan.600" 
                             color="white" 
                             _hover={{ bg: "cyan.700" }}
+                            px={6}
                         >
                             Back
                         </Button>

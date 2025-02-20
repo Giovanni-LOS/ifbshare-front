@@ -6,5 +6,5 @@ export function dateDistanceToToday(createdAt: string) {
 
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-  return diffDays;
+  return Math.max(diffDays, 0);
 }

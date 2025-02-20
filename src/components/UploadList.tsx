@@ -1,9 +1,10 @@
-import { Box, ListItem, Text, IconButton, VStack } from "@chakra-ui/react";
+import { FileCustomMetaData } from "@/store/file";
+import { Box, Text, IconButton, VStack } from "@chakra-ui/react";
 import { IoMdClose } from "react-icons/io";
 
 interface FileUploadListProps {
-    files: File[] | undefined;
-    onRemoveFile?: (file: File) => void;
+    files: File[] | undefined | FileCustomMetaData[];
+    onRemoveFile?: (file: any) => void;
 }
 
 const UploadList = ({ files, onRemoveFile }: FileUploadListProps) => {

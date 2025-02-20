@@ -9,6 +9,13 @@ import CreatePostButton from "@/components/CreatePostButton";
 import PostRow from "@/components/PostRow";
 import { Post } from "@/store/post";
 import defaultPicture from "@/assets/default-user-picture.png";
+import {
+    MenuContent,
+    MenuItem,
+    MenuRoot,
+    MenuTrigger,
+} from "@/components/ui/menu";
+import { IoMdArrowDropdown } from "react-icons/io";
 
 const ProfilePage = () => {
     const { getUserProfile, updateUserProfile, user, getUserPostsById, loggedIn } = useUserProfileStore();
@@ -20,6 +27,8 @@ const ProfilePage = () => {
     const [urlPicture, setUrlPicture] = useState(defaultPicture);
     const { logout, requestPassword } = useAuthStore();
     const [userPosts, setUserPosts] = useState<Post[]>();
+    const degrees = ['Física', 'Computação'];
+
 
     useEffect(() => {
         setUpdatedUser({
@@ -148,20 +157,31 @@ const ProfilePage = () => {
                             onChange={(e) => setUpdatedUser({ ...UpdatedUser, nickname: e.target.value })}
                             width="100%" />
                     </Field>
-                    <Field label="Degree" required>
-                        <Input
-                            color={"black"}
-                            size="md"
-                            px={".75rem"}
-                            py={".25rem"}
-                            fontSize="md"
-                            bg="#f5f1e3"
-                            border="1px solid black"
-                            placeholder="Enter your degree"
-                            name="degree"
-                            value={UpdatedUser.degree}
-                            onChange={(e) => setUpdatedUser({ ...UpdatedUser, degree: e.target.value })}
-                            width="100%" />
+                    <Field label="Degree">
+                        <MenuRoot onSelect={(value) => setUpdatedUser({ ...UpdatedUser, degree: value.value })}>
+                            <MenuTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    size="md"
+                                    bg="#f5f1e3"
+                                    border="1px solid black"
+                                    width="100%"
+                                    justifyContent="space-between"
+                                    px={1}
+                                    mt={0}
+                                >
+                                    <Text>{UpdatedUser.degree || 'Select Degree'}</Text>
+                                    <IoMdArrowDropdown />
+                                </Button>
+                            </MenuTrigger>
+                            <MenuContent>
+                                {degrees.map((degree) => (
+                                    <MenuItem key={degree} value={degree} textAlign="center">
+                                        {degree}
+                                    </MenuItem>
+                                ))}
+                            </MenuContent>
+                        </MenuRoot>         
                     </Field>
 
                     <Field label="Email" required>
@@ -221,7 +241,12 @@ const ProfilePage = () => {
             </HStack>
             <Flex mt={5} flexDirection="column" gap={4}>
                 {userPosts && userPosts.map((post) => (
-                    <PostRow key={post._id} post={post} editable={true} />
+                    <PostRow 
+                    key={post._id} 
+                    post={post} 
+                    editable={true} 
+                    _redirect="/profile" 
+                    onRemove={(id) => { setUserPosts(userPosts.filter((p) => p._id !== id)) }} />
                 ))}
             </Flex>
         </Container>
