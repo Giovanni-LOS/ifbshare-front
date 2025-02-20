@@ -79,10 +79,11 @@ const Navbar = () => {
                         </Text>
                     </Link>
 
-                    <HStack alignItems={"center"} gap={2}>
+                    <HStack spaceX={.2} padding={0} margin={0} alignItems={"baseline"}>
                         <Text
-                            color="black"
-                            fontSize={"md"}
+                            color="#333333"
+                            fontSize={"xl"}
+                            padding={0}
                         >
                             Novo Post
                         </Text>
