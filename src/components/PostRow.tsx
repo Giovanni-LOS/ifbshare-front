@@ -9,6 +9,7 @@ import { IoMdDownload } from "react-icons/io";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { BiSolidEdit } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 interface PostRowProps {
     post: Post;
@@ -65,11 +66,10 @@ const PostRow = ({ post, editable = false, _redirect, onRemove }: PostRowProps) 
 
     async function handleConfirmDelete() {
         try {
-            const response = await fetch(`/api/posts/${post._id}`, { method: "DELETE" });
+            const response = await axios.delete(`/api/posts/${post._id}`)
 
-            if (!response.ok) {
-                const { message } = await response.json();
-                toaster.create({ description: message, title: "Error", type: "error" });
+            if(!response.data.success) {
+                toaster.create({ description: "Failed to delete post", title: "Error", type: "error" });
                 return;
             }
 
